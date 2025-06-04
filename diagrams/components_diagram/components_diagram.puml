@@ -1,0 +1,78 @@
+@startuml  components_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+ !$COLOR_USER = "#1ab1e6 "
+ !$COLOR_CONTAINER ="#87CEFA"
+ AddContainerTag("db", $sprite="database_server", $legendText="database container")
+ AddContainerTag("webApp", $sprite="application_server", $legendText="web app container")
+ 
+ UpdateElementStyle("external_person", $bgColor=$COLOR_USER)
+ UpdateElementStyle("container_boundary", $bgColor=$COLOR_CONTAINER)
+ 
+  Person_Ext(user, "Пользователь", "Cамостоятельно выбирает необходимые ему модули,настраивает")
+  System_Ext(sensors, "Датчики","Собирают информацию,принимают сигналы")
+    
+  System_Boundary(our_system, "Умный дом" ) {
+  ContainerDb(db, "БД", $tags="db")
+  
+  
+  Container_Ext(sensors, "Датчики","Собирают информацию,принимают сигналы") {
+    Component(system_heating_control, "Контроллер датчиков отопления")
+    Component(system_lamp_control, "Контроллер датчиков вкл/выкл света")
+    Component(system_door_control, "Контроллер датчиков дверей откр/закр")
+    Component(system_video_control, "Контроллер видео камер")
+    }
+    
+    
+    Container(service_sensors, "Обработка датчиков", "Обрабатывает информацию с датчиков" )
+
+
+
+   Container_Boundary(module_system, " Модули умного дома") {
+   
+    Component(module_heating_control, "Модуль управления отоплением")
+    Component(module_lamp_control, "Модуль управления светом ")
+    Component(module_door_control, "Модуль управленя дверей откр/закр")
+    Component(module_video_control, "Модуль управления видеокамерами")
+    Component(module_api, "Cервис API", $descr="Для запросов под каждый модуль, и обмен данными между ними")
+    }
+  
+
+  Container_Boundary(web_app, "Пользовательский интерфейс") {
+   
+    Component(heating_component, "Отрисовка компонента Отопления", $descr="Управляем, выбираем настройки")
+    Component(lamp_component, "Отрисовка компонента Освещения", $descr="Управляем, выбираем настройки")
+    Component(door_component, "Отрисовка компонента Двери", $descr="Управляем, выбираем настройки")
+    Component(video_component, "Отрисовка компонента Видеокамер", $descr="Управляем, выбираем настройки")
+    Component(web_api, "Cервис API", $descr="Для запросов действий пользователя")
+    }
+
+ 
+  
+  
+  
+  }
+   
+
+  
+  Rel(user, sensors, "Настройка, управление")
+  Rel(sensors, service_sensors, "Подключение к нашей системе через интернет")
+  Rel(user, web_app, "Просмотр данных, настройка системы под себя" )
+  
+  Rel(service_sensors, db, "Передача данных в БД")
+  Rel(module_api, db, "Передача данных о модулях")
+  Rel(web_api, db, "Чтение/запись настроек пользователя")
+  
+  Rel(module_heating_control, module_api, "Чтение/запись настроек модуля")
+  Rel(module_lamp_control, module_api, "Чтение/запись настроек модуля")
+  Rel(module_door_control, module_api, "Чтение/запись настроек модуля")
+  Rel(module_video_control, module_api, "Чтение/запись настроек модуля")
+  
+  Rel(heating_component, web_api, "Чтение/запись действий/настроек пользователя")
+  Rel(lamp_component, web_api, "Чтение/запись действий/настроек пользователя")
+  Rel(door_component, web_api,  "Чтение/запись действий/настроек пользователя")
+  Rel(video_component, web_api,  "Чтение/запись действий/настроек пользователя")
+  
+
+@enduml

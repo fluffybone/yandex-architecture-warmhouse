@@ -1,0 +1,36 @@
+@startuml container_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+ !$COLOR_USER = "#1ab1e6 "
+ AddContainerTag("db", $sprite="database_server", $legendText="database container")
+ AddContainerTag("webApp", $sprite="application_server", $legendText="web app container")
+ 
+  UpdateElementStyle("external_person", $bgColor=$COLOR_USER)
+ 
+  Person_Ext(user, "Пользователь", "Cамостоятельно выбирает необходимые ему модули,настраивает")
+  System_Ext(sensors, "Датчики","Собирают информацию,принимают сигналы")
+
+  System_Boundary(our_system, "Умный дом" ) {
+  ContainerDb(db, "БД", $tags="db")
+  
+
+   Container(service_sensors, "Обработка датчиков", "Обрабатывает информацию с датчиков" )
+   Container(module_system, "Модули умного дома" ,$descr="Хранит перечень модулей и их реализацию")
+
+   Container(web_app, "Сайт", "React", $tags="webApp")
+  
+  
+  
+  }
+   
+  Rel(user, sensors, "Настройка, управление")
+  Rel(sensors, service_sensors, "Подключение к нашей системе через интернет")
+  Rel(user, web_app, "Просмотр данных, настройка системы под себя" )
+  Rel(service_sensors, db, "Передача данных в БД")
+  
+  Rel(module_system, db, "Передача данных о модулях,Читает информацию о датчиках")
+  Rel(web_app, db, "Чтение информации о модулях/запись настроек пользователя")
+
+
+
+@enduml

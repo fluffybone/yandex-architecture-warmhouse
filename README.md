@@ -68,7 +68,7 @@
 Чтобы добавить ссылку в файл Readme.md, нужно использовать синтаксис Markdown. Это делают так:
 
 ```markdown
-[Тут же положила файл с кодом и рядом картинка](out/context_diagram_task1.5/context_diagram_task1.5.puml)
+[Тут же положила файл с кодом и рядом картинка](diagrams/context_diagram_task1.5/context_diagram_task1.5.puml)
 ```
 
 Замените `Текст ссылки` текстом, который хотите использовать для ссылки. Вместо `URL` вставьте адрес, на который должна вести ссылка. Например:
@@ -83,11 +83,11 @@
 
 **Диаграмма контейнеров (Containers)**
 
-_out/container_diagram/container_diagram.puml_
+_diagrams/container_diagram/container_diagram.puml_
 
 **Диаграмма компонентов (Components)**
 
-_out/components_diagram/components_diagram.puml._
+_diagrams/components_diagram/components_diagram.puml_
 
 **Диаграмма кода (Code)**
 
