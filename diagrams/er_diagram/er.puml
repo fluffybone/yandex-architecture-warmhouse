@@ -1,0 +1,57 @@
+@startuml  er_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+ !$COLOR_USER = "#1ab1e6 "
+
+ UpdateElementStyle("external_person", $bgColor=$COLOR_USER)
+
+
+ SetPropertyHeader("Fields")
+ AddProperty("name")
+ AddProperty("email")
+ Person_Ext(user, "Пользователь", "Cамостоятельно выбирает необходимые ему модули,настраивает")
+ 
+
+  SetPropertyHeader("Fields")
+  AddProperty("id")
+  AddProperty("user_id")
+  AddProperty("address")
+  AddProperty("name")
+  Container(house, "Дом", 'house') 
+   
+  
+  SetPropertyHeader("Fields")
+  AddProperty("id")
+  AddProperty("house_id")
+  AddProperty("name_sensors")
+  AddProperty("status")
+  AddProperty("serial_number")
+  AddProperty("type_id")
+  Container(sensors, "Датчики","sensors") 
+  
+  
+  
+  SetPropertyHeader("Fields")
+  AddProperty("id")
+  AddProperty("type_name")
+  AddProperty("description")
+  Container(sensorstype, "Тип датчика","sensorstype") 
+  
+  
+  SetPropertyHeader("Fields")
+  AddProperty("id")
+  AddProperty("sensor_id")
+  AddProperty("data_value")
+  Container(telemetry, "Телеметрия","telemetry") 
+
+
+ user "1" -- "0..*" house : имеет
+ house "1" -- "0..*" sensors : содержит
+ sensors "1" -- "1" sensorstype : имеет тип
+ sensors "1" -- "0..*" telemetry : передаёт данные
+
+
+  
+
+@enduml
