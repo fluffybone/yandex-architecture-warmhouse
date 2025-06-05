@@ -83,15 +83,15 @@
 
 **Диаграмма контейнеров (Containers)**
 
-_diagrams/container_diagram/container_diagram.puml_
+diagrams/container_diagram/container_diagram.puml
 
 **Диаграмма компонентов (Components)**
 
-_diagrams/components_diagram/components_diagram.puml_
+diagrams/components_diagram/components_diagram.puml
 
 **Диаграмма кода (Code)**
 
-Добавьте одну диаграмму или несколько.
+diagrams/code_diagram/code_diagram.puml
 
 # Задание 3. Разработка ER-диаграммы
 

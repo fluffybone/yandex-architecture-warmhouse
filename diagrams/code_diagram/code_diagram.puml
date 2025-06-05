@@ -1,0 +1,42 @@
+@startuml diagram_code
+skinparam classAttributeIconSize 0
+
+class User {
+  - name: String
+  - email: String
+
+  + register(): void
+  + login(): boolean
+  + logout(): void
+}
+
+class Modules {
+  - title: String
+  - description: String
+  - id: Number
+  - subscription_start_date: Date | null
+  - subscription_end_date: Date | null
+  - has_module: boolean
+
+  + subscribe(): void
+  + unsubscribe(): void
+}
+
+
+' Связи между классами
+User "1" -- "0..1" Modules : управляет
+
+note right of User
+  === Пользователь ===
+  Основной пользователь системы.
+  Может зарегистрироваться, авторизоваться, разлогиниться.
+end note
+
+note right of Modules
+  === Модули доступные для управления ===
+  Представляет объект модуля (управление отплением, управление видеокамерами итд)
+  Информацию о подключенных модулях
+end note
+
+
+@enduml
