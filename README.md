@@ -83,19 +83,19 @@
 
 **Диаграмма контейнеров (Containers)**
 
-diagrams/container_diagram/container_diagram.puml
+schemas/container_diagram/container_diagram.puml
 
 **Диаграмма компонентов (Components)**
 
-diagrams/components_diagram/components_diagram.puml
+schemas/components_diagram/components_diagram.puml
 
 **Диаграмма кода (Code)**
 
-diagrams/code_diagram/code_diagram.puml
+schemas/code_diagram/code_diagram.puml
 
 # Задание 3. Разработка ER-диаграммы
 
-diagrams/er_diagram/er.puml
+schemas/er_diagram/er.puml
 
 # Задание 4. Создание и документирование API
 
@@ -103,9 +103,17 @@ diagrams/er_diagram/er.puml
 
 Укажите, какой тип API вы будете использовать для взаимодействия микросервисов. Объясните своё решение.
 
+Взаимодействие на основе REST API
+Так как прямой связи между моими микросервисами нет, все они ходят за информацией в БД
+Если мы находимся в микросервисе, который обслуживает Сайт, то при загрузке сайта api микросервиса Сайта сходит в бд и посмотрит информацию о модулях которые есть, и о рабочих датчиках
+
+Данный api легче поддерживать, требует меньше ресурсов, нет путанницы при использовании глобального состояния или управления подписками
+
 ### 2. Документация API
 
 Здесь приложите ссылки на документацию API для микросервисов, которые вы спроектировали в первой части проектной работы. Для документирования используйте Swagger/OpenAPI или AsyncAPI.
+
+schemas/api/index.yaml
 
 # Задание 5. Работа с docker и docker-compose
 

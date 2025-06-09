@@ -28,6 +28,8 @@
   AddProperty("status")
   AddProperty("serial_number")
   AddProperty("type_id")
+  AddProperty("data")
+  AddProperty("update_at")
   Container(sensors, "Датчики","sensors") 
   
   
