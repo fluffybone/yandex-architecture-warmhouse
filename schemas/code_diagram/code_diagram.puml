@@ -1,9 +1,16 @@
 @startuml diagram_code
 skinparam classAttributeIconSize 0
+skinparam noteBackgroundColor #FFFACD
+skinparam arrowColor #5E94C6
+
+' === КЛАССЫ === '
 
 class User {
+  - id: Long
   - name: String
   - email: String
+  - role: Role
+  - createdAt: Date
 
   + register(): void
   + login(): boolean
@@ -11,20 +18,59 @@ class User {
 }
 
 class Modules {
+  - id: Long
   - title: String
   - description: String
-  - id: Number
-  - subscription_start_date: Date | null
-  - subscription_end_date: Date | null
-  - has_module: boolean
+  - price: Double
+  - isActive: Boolean
 
-  + subscribe(): void
-  + unsubscribe(): void
+  + activate(): void
+  + deactivate(): void
 }
 
+class Subscription {
+  - moduleId: Long
+  - userId: Long
+  - startDate: Date
+  - endDate: Date
+  - status: SubscriptionStatus
 
-' Связи между классами
-User "1" -- "0..1" Modules : управляет
+  + renew(): void
+  + cancel(): void
+}
+
+class Payment {
+  - doubleAmount: String
+  - paymentType: PaymentType
+  - paymentStatus: PaymentStatus
+  + processPayment(): void
+}
+
+class PaymentType {
+  + CARD
+  + PAYPAL
+  + APPLE_PAY
+  + GOOGLE_PAY
+}
+
+class PaymentStatus {
+  + SUCCESS
+  + FAILED
+  + PENDING
+  + REFUNDED
+}
+
+' === ОТНОШЕНИЯ === '
+
+User "1" -- "0..*" Modules : управляет
+Modules "1" -- "0..*" Subscription : участвует в подписках
+Modules "1" -- "0..*" Payment : оплачивает через
+User "1" -- "0..*" Payment : совершает платежи
+
+Payment --> PaymentType : использует
+Payment --> PaymentStatus : имеет
+
+' === ENUM и ПРИМЕЧАНИЯ === '
 
 note right of User
   === Пользователь ===
@@ -34,8 +80,18 @@ end note
 
 note right of Modules
   === Модули доступные для управления ===
-  Представляет объект модуля (управление отплением, управление видеокамерами итд)
-  Информацию о подключенных модулях
+  Представляет объект модуля (управление отоплением, видеокамерами и т.д.)
+end note
+
+note right of Subscription
+  === Подписка ===
+  Хранит информацию о том,
+  какие модули активированы у пользователя
+end note
+
+note right of Payment
+  === Оплата ===
+  Хранит информацию об оплате и ее статусе
 end note
 
 

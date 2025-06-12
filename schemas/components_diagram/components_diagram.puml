@@ -5,8 +5,8 @@
  !$COLOR_USER = "#1ab1e6 "
 
  AddContainerTag("db", $sprite="database_server", $legendText="database container")
+ AddContainerTag("broker", $bgColor="#B784A7", $fontColor="white", $legendText="Брокер сообщений")
 
- Person_Ext(user, "Пользователь", "Cамостоятельно выбирает необходимые ему модули,настраивает")
  UpdateElementStyle("external_person", $bgColor=$COLOR_USER)
  UpdateElementStyle("container_boundary", $bgColor=$COLOR_CONTAINER)
  
@@ -17,16 +17,16 @@
 
 
   Container_Boundary(web_app, "Сайт") {
-   
     Component(app, "Отрисовка интерфейса", $descr="Просматриваем информацию с датчиков, выбираем настройки", 'React')
- 
     Component(web_api, "Cервис API", $descr="Для запросов действий пользователя")
+    Component(repository, "Репозиторий", $descr="Хранит актуальный код", 'Gitlab')
+  
     
     }
 
    System_Ext(login_system, "Сервис регистрации/логина","Внешняя интегрированная система")
+   Component(api_handler, "Обработка событий от брокера сообщения", $tags="broker")
 
-  
   
   
   
@@ -34,14 +34,15 @@
 
   
 
-  Rel(user, app, "Настройка датчиков, просмотр информации через сайт")
-  Rel(app, web_api, "Обработка запросов пользователя")
-  Rel(app, login_system, "Показ формы логина/регистрации если истекла сессия")
 
+  Rel(app, web_api, "Обработка запросов пользователя")
+  Rel(app, repository, "Отдает/получает фронтенд код")
+  Rel(web_api, repository, "Отдает/получает бэкенд код")
+  Rel(login_system, app, "Показ формы логина/регистрации если истекла сессия")
   Rel(web_api, login_system, "Проверка авторизаци")
   Rel(web_api, db, "Чтение/запись настроек пользователя")
-
-  Rel(db, web_api, "Отдает информацию о датчиках")
+  Rel(web_api, api_handler, "Потребление событий")
+  Rel(db, web_api, "Отдает информацию о датчиках и модулях")
 
   
 
