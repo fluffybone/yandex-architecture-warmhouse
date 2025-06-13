@@ -1,0 +1,52 @@
+@startuml container_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+ !$COLOR_USER = "#1ab1e6 "
+ AddContainerTag("db", $sprite="database_server", $legendText="database container")
+ AddContainerTag("webApp", $sprite="application_server", $legendText="web app container")
+ AddContainerTag("gateway", $bgColor="#5bc0de", $fontColor="black", $legendText="API Gateway")
+ AddContainerTag("broker", $bgColor="#B784A7", $fontColor="white", $legendText="Брокер сообщений")
+ 
+  UpdateElementStyle("external_person", $bgColor=$COLOR_USER)
+ 
+  Person_Ext(user, "Пользователь", "Cамостоятельно выбирает необходимые ему модули,настраивает")
+  System_Ext(sensors, "Датчики","Собирают информацию,принимают сигналы")
+  
+  Container(api_gateway, "API Gateway", "Единая точка входа для внешних сервисов, обработка и перенаправление запросовмежду сервисами,балансер", $tags="gateway")
+  
+  System_Boundary(our_system, "Умный дом" ) {
+    Container(web_app, "Сайт", "React", $tags="webApp")
+  ContainerDb(db, "БД", $tags="db")
+  
+   Container(module_system, "Модули умного дома" ,$descr="Хранит перечень модулей и их реализацию")
+  
+    Container_Ext(message_broker, "Брокер сообщений",  "Используется для асинхронной обработки задач", $tags="broker")
+
+ 
+    Container(service_sensors, "Телеметрия", "Принимает показания с физических/виртуальных датчиков,Проверяет, корректны ли полученные значения,Сохраняет данные в БД для последующего анализа или вывода пользователю,Передаёт данные другим сервисам через брокер сообщений" )
+  
+  
+  }
+  
+  System_Ext(login_system, "Сервис Авторизации","Внешняя интегрированная система")
+
+   
+  Rel(user, sensors, "Настройка, управление")
+
+  Rel(service_sensors, db, "Передача данных в БД")
+  Rel(user, login_system, "Логин/Регистрация")
+
+  Rel(login_system, api_gateway, "Просмотр данных, настройка системы под себя" )
+  Rel(sensors, api_gateway, "Передача данных с датчиков" )
+
+  Rel(api_gateway, service_sensors, "Датчики - Подключение к нашей системе через интернет")
+  Rel(api_gateway, web_app, "Проверка авторизации пользователя, Пользователь - настраивает систему под себя через сайт, после успешной авторизации" )
+  
+  Rel(module_system, db, "Передача данных о модулях,Читает информацию о датчиках")
+  Rel(web_app, db, "Чтение информации о модулях/запись настроек пользователя")
+  
+  Rel(service_sensors, message_broker, "Публикация событий")
+  Rel(web_app, message_broker, "Потребление событий")
+
+
+@enduml

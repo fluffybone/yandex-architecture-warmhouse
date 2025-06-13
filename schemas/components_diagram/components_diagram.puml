@@ -1,0 +1,49 @@
+@startuml  components_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+ !$COLOR_USER = "#1ab1e6 "
+
+ AddContainerTag("db", $sprite="database_server", $legendText="database container")
+ AddContainerTag("broker", $bgColor="#B784A7", $fontColor="white", $legendText="Брокер сообщений")
+
+ UpdateElementStyle("external_person", $bgColor=$COLOR_USER)
+ UpdateElementStyle("container_boundary", $bgColor=$COLOR_CONTAINER)
+ 
+
+  ContainerDb(db, "БД", $tags="db")
+  
+  
+
+
+  Container_Boundary(web_app, "Сайт") {
+    Component(app, "Отрисовка интерфейса", $descr="Просматриваем информацию с датчиков, выбираем настройки", 'React')
+    Component(web_api, "Cервис API", $descr="Для запросов действий пользователя")
+    Component(repository, "Репозиторий", $descr="Хранит актуальный код", 'Gitlab')
+  
+    
+    }
+
+   System_Ext(login_system, "Сервис регистрации/логина","Внешняя интегрированная система")
+   Component(api_handler, "Обработка событий от брокера сообщения", $tags="broker")
+
+  
+  
+  
+   
+
+  
+
+
+  Rel(app, web_api, "Обработка запросов пользователя")
+  Rel(app, repository, "Отдает/получает фронтенд код")
+  Rel(web_api, repository, "Отдает/получает бэкенд код")
+  Rel(login_system, app, "Показ формы логина/регистрации если истекла сессия")
+  Rel(web_api, login_system, "Проверка авторизаци")
+  Rel(web_api, db, "Чтение/запись настроек пользователя")
+  Rel(web_api, api_handler, "Потребление событий")
+  Rel(db, web_api, "Отдает информацию о датчиках и модулях")
+
+  
+
+@enduml

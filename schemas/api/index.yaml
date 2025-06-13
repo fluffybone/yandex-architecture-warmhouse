@@ -1,0 +1,318 @@
+openapi: 3.0.0
+info:
+  title: Умный дом API
+  description: API для системы "Умный дом"
+  version: 0.0.1
+servers:
+  - url: https://localhost:8080/api/v1 
+    description: Основной сервер
+
+tags:
+  - name: Sensors
+    description: Работа с данными датчиков
+  - name: Modules
+    description: Управление модулями умного дома
+  - name: WebApp
+    description: Сайт пользователя и настройки
+
+paths:
+  # === Микросервис: Обработка датчиков ===
+  /sensors/data:
+    post:
+      tags:
+        - Sensors
+      summary: Запись информации о датчиках
+      description: Прием данных от датчика (температура, влажность и т.д.)
+      responses:
+        '200':
+          description: Список датчиков
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sensors"
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка сервера
+        'default':
+          description: Все нестандартное
+          content:
+            application/json:
+             schema: 
+               $ref: "#/components/schemas/Error"      
+
+  # === Микросервис: Модули умного дома ===
+  /modules/list:
+    get:
+      tags:
+        - Modules
+      summary: Список доступных модулей
+      responses:
+        '200':
+          description: Список модулей
+          content:
+            application/json:
+               schema:
+                $ref: "#/components/schemas/Modules"
+        'default':
+          description: Все нестандартное
+          content:
+            application/json:
+             schema: 
+               $ref: "#/components/schemas/Error"
+          
+           
+
+  /module:
+    post:
+      tags:
+        - Modules
+      summary: Метод создания модуля
+      description: Создает новый модуль
+      requestBody:
+        required: true
+        content:
+          application/json:
+           schema: 
+            $ref: "#/components/schemas/Module" 
+      responses:
+        '200':
+          description: список всех модулей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: "#/components/schemas/Modules" 
+        'default':
+          description: Все нестандартное
+          content:
+            application/json:
+             schema: 
+               $ref: "#/components/schemas/Error"
+          
+    put:
+      tags:
+        - Modules
+      summary: Обновление информации о модуле
+      description: Позволяет донастроить модуль
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             $ref: "#/components/schemas/Module"
+      responses:
+        '200':
+          description: Настройки обновлены
+        'default':
+          description: Все нестандартное
+          content:
+            application/json:
+             schema: 
+               $ref: "#/components/schemas/Error"
+
+
+  # === Микросервис: Сайт (WebApp) ===
+  /user:
+    get:
+      tags:
+        - WebApp
+      summary: Информация о пользователе
+      responses:
+        '200':
+          description: Настройки пользователя
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+               
+
+    put:
+      tags:
+        - WebApp
+      summary: Обновление пользовательских настроек
+      description: Позволяет пользователю изменить настройки
+      requestBody:
+        required: true
+        content:
+          application/json:
+           schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: Настройки обновлены
+        '400':
+          description: Неверные данные
+
+  /user/modules:
+    get:
+      tags:
+        - WebApp
+      summary: Список модулей пользователя
+      description: Возвращает все модули, которые добавил пользователь
+      responses:
+        '200':
+          description: Список модулей
+          content:
+            application/json:
+             schema:
+              $ref: "#/components/schemas/Modules"
+        'default':
+          description: Все нестандартное
+          content:
+            application/json:
+             schema: 
+               $ref: "#/components/schemas/Error"     
+              
+  /user/modules/{moduleId}/enable:
+    post:
+      tags:
+        - WebApp
+      summary: Добавление к себе модуля для отслежнивания
+      description: Активирует указанный модуль
+      parameters:
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Модуль успешно включен
+        '404':
+          description: Модуль не найден  
+  
+  /user/modules/{moduleId}/disable:
+    post:
+      tags:
+        - Modules
+      summary: Выключение модуля
+      description: Деактивирует указанный модуль
+      parameters:
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Модуль успешно выключен
+        '404':
+          description: Модуль не найден        
+          
+  /modules/{moduleId}/disable:
+    post:
+      tags:
+        - Modules
+      summary: Выключение модуля
+      description: Деактивирует указанный модуль
+      parameters:
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Модуль успешно выключен
+        '404':
+          description: Модуль не найден                    
+                      
+components:
+  schemas:
+    Sensor:
+      type: object
+      required: 
+       - serial_number
+      properties:
+       id:
+        type: string
+        example: "12345"
+       house_id:
+        type: string
+        example: "home12"
+       serial_number:
+        type: string
+        example: "092-eddsd-23"
+       name_sensors:
+        type: string
+        example: "video_camera_r"
+       data:
+        type: object
+        example: vedeorecord.move
+       update_at:
+        type: string
+        example: "2025-04-05T14:30:00Z"
+       status:
+        type: string
+        enum:
+         - online
+         - offline
+        description: "Состояние работы сенсора вкл/выкл"
+       type_id:
+        type: string
+        example: "camera_00012"
+    Sensors:
+     type: array
+     items:
+      $ref: "#/components/schemas/Sensor"
+    Module:
+     type: object
+     required: 
+       - title
+     properties:
+       id:
+        type: integer
+        example: 1
+       title:
+        type: string
+        example: "Управление отоплением"
+       created_date: 
+        type: string
+        example: "2025-04-05T14:30:00Z"
+       is_active:
+        type: boolean
+        example: true
+       sensor_type:
+        type: string
+        example: 'radiator'
+    Modules:
+     type: array
+     items:
+      $ref: "#/components/schemas/Module"
+        
+    User:
+     type: object
+     required:
+      - email
+     properties:
+      email:
+       type: string
+       example: "user@mail.ru"
+      name:
+       type: string
+       example: "Полина"
+       
+        
+    Error:
+     type: object
+     required: 
+       - code
+       - message
+     properties:
+      code:
+       type: integer
+      message:
+       type: string
+      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      

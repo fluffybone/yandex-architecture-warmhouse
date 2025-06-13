@@ -1,0 +1,26 @@
+@startuml context_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+ !$COLOR_USER = "#1ab1e6 "
+ UpdateElementStyle("external_person", $bgColor=$COLOR_USER)
+
+   Person_Ext(user, "Пользователь", "Может управлять отоплением и просматривать данные о температуре")
+   Person(specialist, "Специалист по настройке датчиков", "Устанавливает датчики а доме у клиентов")
+   
+   System_Ext(sensors, "Датчики",'Измеряют температуру в помещении')
+   System(our_system, "Темплый дом")
+  
+   
+
+   
+ 
+  
+  Rel(specialist, sensors, "Установка датчиков")
+  Rel(sensors, our_system, "Передача данных")
+  Rel(user, sensors, "Управление датчиками")
+  Rel(our_system, user, "Просмотр данных")
+
+ 
+
+
+@enduml
