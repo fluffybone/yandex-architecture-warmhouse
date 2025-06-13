@@ -3,8 +3,11 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 
 interface TemperatureResponse {
   location: string;
-  sensorId: string;
-  temperature: number;
+  sensor_id: string;
+  value: number;
+  timestamp: string;
+  status: string;
+  sensor_type: string;
 }
 
 @Controller('temperature')
@@ -70,8 +73,11 @@ export class TemperatureController {
 
     return {
       location: resolvedLocation,
-      sensorId: resolvedSensorId,
-      temperature,
+      sensor_id: resolvedSensorId,
+      value: temperature,
+      timestamp: new Date().toISOString(),
+      status: 'active',
+      sensor_type: 'temperature',
     };
   }
 }
